@@ -6,314 +6,251 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>849</width>
-    <height>604</height>
+    <width>831</width>
+    <height>673</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="stack_button">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>700</x>
-      <y>340</y>
-      <width>84</width>
-      <height>34</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Stack</string>
-    </property>
-   </widget>
-   <widget class="QListWidget" name="list_lights">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>20</y>
-      <width>201</width>
-      <height>251</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QListWidget" name="list_darks">
-    <property name="geometry">
-     <rect>
-      <x>220</x>
-      <y>20</y>
-      <width>201</width>
-      <height>251</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QListWidget" name="list_flats">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>430</x>
-      <y>20</y>
-      <width>201</width>
-      <height>251</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QListWidget" name="list_bias">
-    <property name="geometry">
-     <rect>
-      <x>640</x>
-      <y>20</y>
-      <width>201</width>
-      <height>251</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="file_label_lights">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>0</y>
-      <width>201</width>
-      <height>18</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Light frames</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="file_label_darks">
-    <property name="geometry">
-     <rect>
-      <x>220</x>
-      <y>0</y>
-      <width>201</width>
-      <height>18</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Dark frames</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="file_label_flats">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>430</x>
-      <y>0</y>
-      <width>201</width>
-      <height>18</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Flat  frames</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="file_label_bias">
-    <property name="geometry">
-     <rect>
-      <x>640</x>
-      <y>0</y>
-      <width>201</width>
-      <height>18</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Bias frames</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="mode_triangles">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>320</y>
-      <width>271</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>&amp;Triangle similarity star alignment (for DSO)</string>
-    </property>
-    <property name="checked">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="mode_ecc">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>340</y>
-      <width>111</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>ECC a&amp;lignment</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="mode_center">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>360</y>
-      <width>181</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Center of &amp;gravity alignment</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="test_button">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>370</x>
-      <y>340</y>
-      <width>84</width>
-      <height>34</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Test</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_stars">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>370</y>
-      <width>141</width>
-      <height>18</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="threshold">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>340</y>
-      <width>52</width>
-      <height>32</height>
-     </rect>
-    </property>
-    <property name="value">
-     <number>60</number>
-    </property>
-   </widget>
-   <widget class="QLabel" name="threshold_label">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>320</y>
-      <width>141</width>
-      <height>18</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Star detection threshold</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="console_label">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>390</y>
-      <width>141</width>
-      <height>18</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Console output</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="choose_lights">
-    <property name="geometry">
-     <rect>
-      <x>60</x>
-      <y>280</y>
-      <width>101</width>
-      <height>34</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Choose folder</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="choose_darks">
-    <property name="geometry">
-     <rect>
-      <x>270</x>
-      <y>280</y>
-      <width>101</width>
-      <height>34</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Choose folder</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="choose_flats">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>480</x>
-      <y>280</y>
-      <width>101</width>
-      <height>34</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Choose folder</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="choose_bias">
-    <property name="geometry">
-     <rect>
-      <x>690</x>
-      <y>280</y>
-      <width>101</width>
-      <height>34</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Choose folder</string>
-    </property>
-   </widget>
-   <widget class="QTextBrowser" name="console">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>410</y>
-      <width>831</width>
-      <height>171</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Monospace</family>
-     </font>
-    </property>
-   </widget>
+   <layout class="QVBoxLayout" name="verticalLayout_9">
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout_8">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QLabel" name="file_label_lights">
+            <property name="text">
+             <string>Light frames</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QListWidget" name="list_lights"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="choose_lights">
+            <property name="text">
+             <string>Choose folder</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QLabel" name="file_label_darks">
+            <property name="text">
+             <string>Dark frames</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QListWidget" name="list_darks"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="choose_darks">
+            <property name="text">
+             <string>Choose folder</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QLabel" name="file_label_flats">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Flat  frames</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QListWidget" name="list_flats">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="choose_flats">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Choose folder</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QLabel" name="file_label_bias">
+            <property name="text">
+             <string>Bias frames</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QListWidget" name="list_bias"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="choose_bias">
+            <property name="text">
+             <string>Choose folder</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QRadioButton" name="mode_triangles">
+            <property name="text">
+             <string>&amp;Triangle similarity star alignment (for DSO)</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="mode_ecc">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>ECC a&amp;lignment</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="mode_center">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Center of &amp;gravity alignment</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_6">
+          <item>
+           <widget class="QLabel" name="threshold_label">
+            <property name="text">
+             <string>Star detection threshold</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QSpinBox" name="threshold">
+              <property name="value">
+               <number>60</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="test_button">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="text">
+               <string>Test</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="stack_button">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+           <string>Stack</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_7">
+        <item>
+         <widget class="QLabel" name="console_label">
+          <property name="text">
+           <string>Console output</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTextBrowser" name="console">
+          <property name="font">
+           <font>
+            <family>Monospace</family>
+           </font>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_stars">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>
