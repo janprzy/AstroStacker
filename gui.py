@@ -286,8 +286,9 @@ def divide(image, calibration):
     return cv2.divide(image, calibration)
 
 # this function sets global variable of choosen directory
-def choose_dir(self, mode):
-    directory = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
+def choose_dir(self, mode, title=None):
+    if title is None or title is "": title="Select Directory"
+    directory = str(QFileDialog.getExistingDirectory(self, title))
     if directory is not "":
         if mode is 0:
             global lightdir
@@ -451,10 +452,10 @@ class MainDialog(QMainWindow):
         self.stack_button.clicked.connect(self.stack)
         self.test_button.clicked.connect(self.test_threshold)
 
-        self.choose_lights.clicked.connect(partial(choose_dir, self, 0))
-        self.choose_darks.clicked.connect(partial(choose_dir, self, 1))
-        self.choose_flats.clicked.connect(partial(choose_dir, self, 2))
-        self.choose_bias.clicked.connect(partial(choose_dir, self, 3))
+        self.choose_lights.clicked.connect(partial(choose_dir, self, 0, "Select Light frames"))
+        self.choose_darks.clicked.connect(partial(choose_dir, self, 1, "Select Dark frames"))
+        self.choose_flats.clicked.connect(partial(choose_dir, self, 2, "Select Flats"))
+        self.choose_bias.clicked.connect(partial(choose_dir, self, 3, "Select Bias frames"))
 
         self.threshold.valueChanged.connect(self.thresholdchange)
 
