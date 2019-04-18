@@ -12,7 +12,7 @@ here's what's working and what will be added:
   surfaces, second one is good for planetary images)
 - Reading 8/16/32-bit FITS images and RAW DSLR images
 - Writing to various formats, like FITS, TIFF
-- More stacking methods (median, maximum, minimum, additive)
+- More stacking methods (maximum, minimum, additive)
 - Pixel rejection algorithms for stacking
 - Reduce size of needed libraries
 - Add ability to stop stacking
