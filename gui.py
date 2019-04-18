@@ -511,11 +511,7 @@ class MainDialog(QMainWindow):
 
         self.choose_lights.clicked.connect(partial(choose_dir, self, 0, "Select Light frames"))
         self.choose_darks.clicked.connect(partial(choose_dir, self, 1, "Select Dark frames"))
-<<<<<<< HEAD
-        self.choose_flats.clicked.connect(partial(choose_dir, self, 2, "Select Flats"))
-=======
-        self.choose_flats.clicked.connect(partial(choose_dir, self, 2, "Select Flats"))
->>>>>>> de3227b3ae9362f86c4db5db14a70f3abbdc1cd2
+        self.choose_flats.clicked.connect(partial(choose_dir, self, 2, "Select Flat frames"))
         self.choose_bias.clicked.connect(partial(choose_dir, self, 3, "Select Bias frames"))
 
         self.threshold.valueChanged.connect(self.thresholdchange)
