@@ -333,6 +333,48 @@ def median(files, self):
     print("Stacking took " + total + "s")
     return stacked
 
+# this function takes a directory of files and calculates the sum from pixel values of images
+def add(files, self):
+    print("Starting additive stacking")
+    start = timer()
+
+    dir = os.listdir(files)
+
+    first = None
+    stacked = None
+
+    i = 0
+    total_files = len(dir)
+
+    for file in dir:
+        i += 1
+        file = files + "/" + file
+
+        if file.endswith("png") or file.endswith("jpg") or file.endswith("jpeg") or file.endswith("tif") or file.endswith("tiff"):
+            image = cv2.imread(file, -1)
+        elif file.endswith("fit") or file.endswith("fits"):
+            image = fits.open(file)
+            if image[0].data.shape[0] is 3:
+                R = image[0].data[0]
+                G = image[0].data[1]
+                B = image[0].data[2]
+                image = cv2.merge([B, G, R])
+            else:
+                image = image[0].data
+
+        print("(" + str(i) + "/" + str(total_files) + ") Stacking " + file + "...")
+        if first is None:
+            first = image
+            stacked = image
+        else:
+            stacked = cv2.addWeighted(stacked, 1, image, 0.1, 0) #TODO let the user choose the weighting
+    
+    #How long did the stacking take?
+    stop = timer()
+    total = str(float("%0.3f"%float(stop - start)))
+    print("Stacking took " + total + "s")
+    return stacked
+
 # small function for subtracting two images
 def subtract(image, calibration):
     return cv2.subtract(image, calibration)
@@ -395,7 +437,7 @@ def process_images(self, stackmode):
             global master_bias
             try:
                 bias_bool = True
-                master_bias = stackmode(biasdir, self)
+                master_bias = median(biasdir, self)
             except Exception as e:
                 bias_bool = False
                 print(e)
@@ -408,7 +450,7 @@ def process_images(self, stackmode):
             global master_dark
             try:
                 dark_bool = True
-                master_dark = stackmode(darksdir, self)
+                master_dark = median(darksdir, self)
             except Exception as e:
                 dark_bool = False
                 print(e)
@@ -545,6 +587,10 @@ class MainDialog(QMainWindow):
             elif self.stack_median.isChecked():
                 print("Median stacking selected")
                 t = threading.Thread(target=process_images, args=(self, median))
+                t.start()
+            elif self.stack_add.isChecked(): 
+                print("Additive stacking selected")
+                t = threading.Thread(target=process_images, args=(self, add))
                 t.start()
             else:
                 print("No stacking mode selected - are the radio buttons broken?\nCan't stack this")
