@@ -163,7 +163,7 @@ def find_similar(first_list, second_list, threshold):
     return triangles
 
 # function for star alignment
-def alignImage(files, original, threshold_percent):
+def triangleAlign(files, original, threshold_percent):
     start = timer()
     dir = os.listdir(files)
     first = None
@@ -427,7 +427,7 @@ def choose_dir(self, mode, title=None):
 
 # this function is for executing image processing sequence
 # stackfunc is the function to call for stacking: stackmode(dir, self)
-def process_images(self, stackmode):
+def process_images(self, stackmode, alignmode):
     bias_bool = False
     dark_bool = False
     flat_bool = False
@@ -519,16 +519,21 @@ def process_images(self, stackmode):
             total = str(float("%0.3f"%float(stop - start)))
             print("Calibration took " + total + "s")
 
-    if bias_bool or dark_bool:
-        alignImage(lightdir + "/calibrated", lightdir, threshold)
-    else:
-        alignImage(lightdir, lightdir, threshold)
+    if alignmode: # Only align if alignMode is not None
+        if bias_bool or dark_bool:
+            alignmode(lightdir + "/calibrated", lightdir, threshold)
+        else:
+            alignmode(lightdir, lightdir, threshold)
 
     if lightdir is not None and lightdir is not "":
         print("Done.\nStacking images...")
         try:
-            avg = stackmode(lightdir + "/aligned", self)
-            cv2.imwrite(lightdir + "/stacked.png", avg)
+            if alignmode: #TODO: Fix this
+                stacked = stackmode(lightdir + "/aligned", self)
+            else:
+                stacked = stackmode(lightdir, self)
+                
+            cv2.imwrite(lightdir + "/stacked.png", stacked)
             print("Done!")
         except Exception as e:
             print(e)
@@ -575,6 +580,21 @@ class MainDialog(QMainWindow):
         threshold = self.threshold.value()
 
     def stack(self):
+        if self.mode_center.isChecked():
+            print("Using center of gravity aligning")
+            alignmode = None #This mode is not implemented yet and therefore can't be selected
+        elif self.mode_ecc.isChecked():
+            print("Using ECC aligning")
+            alignmode = None #This mode is not implemented yet and therefore can't be selected
+        elif self.mode_triangles.isChecked():
+            print("Using triangle aligning")
+            alignmode = triangleAlign
+        elif self.mode_not.isChecked(): # Don't align the images. This can be used to try out different stacking modes without aligning them all over again every time
+            print("Not aligning")
+            alignmode = None
+        else:
+            print("No align mode selected - are the radio buttons broken?\nI can't work this")
+        
         try:
             lightdir
         except NameError:
@@ -582,18 +602,18 @@ class MainDialog(QMainWindow):
         else:
             if self.stack_average.isChecked():
                 print("Average stacking selected")
-                t = threading.Thread(target=process_images, args=(self, average))
+                t = threading.Thread(target=process_images, args=(self, average, alignmode))
                 t.start()
             elif self.stack_median.isChecked():
                 print("Median stacking selected")
-                t = threading.Thread(target=process_images, args=(self, median))
+                t = threading.Thread(target=process_images, args=(self, median, alignmode))
                 t.start()
             elif self.stack_add.isChecked(): 
                 print("Additive stacking selected")
-                t = threading.Thread(target=process_images, args=(self, add))
+                t = threading.Thread(target=process_images, args=(self, add, alignmode))
                 t.start()
             else:
-                print("No stacking mode selected - are the radio buttons broken?\nCan't stack this")
+                print("No stacking mode selected - are the radio buttons broken?\nI can't work this")
 
     def test_threshold(self):
         try:

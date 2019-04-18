@@ -2,7 +2,7 @@
 This application is used for pre-processing astronomical images. For now,
 here's what's working and what will be added:
 ##### Working
-- Average stacking of image sets
+- Average, median or add stacking of image sets
 - Calibrating lights with darks and bias frames
 - Star alignment using triangle similarity
 - Setting threshold of star detection
@@ -18,6 +18,7 @@ here's what's working and what will be added:
 - Add ability to stop stacking
 - Mosaik stacking
 - Add setting for weighting when using additive stacking
+- Fix hardcoded paths and functions that do more than they should (e.g. the stacking functions should not be responsible for reading in the images)
 
 ### Installation
 1. Clone this git repository: `git clone -b master --single-branch https://github.com/hamstersztyk/AstroStacker.git`
@@ -39,8 +40,9 @@ here's what's working and what will be added:
   frames are optional)
 3. Test number of detected stars (more stars = slower, but more
   precise alignment)
-4. Click "Stack" button to process the images
-5. Final image will be saved in directory with light frames
+4. Choose stacking mode
+5. Click "Stack" button to process the images
+6. Final image will be saved in directory with light frames
 
 ### Testing with example images
 I provided a small set of my own images for testing while developing in

@@ -151,6 +151,13 @@
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QRadioButton" name="mode_not">
+           <property name="text">
+            <string>Don't align</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
       </item>
