@@ -152,6 +152,7 @@ def sort_list(list_triangles):
 
 # this function finds similar triangles in both lists
 def find_similar(first_list, second_list, threshold):
+    print("Looking for similar triangles...")
     triangles = []
     for tr1 in first_list:
         for tr2 in second_list:
@@ -203,6 +204,7 @@ def alignImage(files, original, threshold_percent):
                 try:
                     # find triangles in destination image
                     destination_coordinates = sort_list(getTriangles(image, threshold_percent))
+                    
                     # find similar triangles in both lists
                     similar = find_similar(source_coordinates, destination_coordinates, 1e-3)
 
@@ -231,9 +233,9 @@ def alignImage(files, original, threshold_percent):
     total = str(float("%0.3f"%float(stop - start)))
     print("Star alignment took " + total + "s")
 
-# this function takes a directory of files and calculates average
-# from pixel values of images
+# this function takes a directory of files and calculates the average from pixel values of images
 def average(files, self):
+    print("Starting median stacking")
     start = timer()
 
     dir = os.listdir(files)
@@ -271,7 +273,61 @@ def average(files, self):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         stacked = img_as_uint(stacked / len(dir))
+    
+    #How long did the stacking take?
+    stop = timer()
+    total = str(float("%0.3f"%float(stop - start)))
+    print("Stacking took " + total + "s")
+    return stacked
 
+# this function takes a directory of files and calculates the median from pixel values of images
+def median(files, self):
+    print("Starting median stacking")
+    start = timer()
+
+    dir = os.listdir(files)
+
+    first = None
+    stacked = None
+
+    i = 0
+    total_files = len(dir)
+    
+    # All images
+    images = []
+    
+    for file in dir:
+        i += 1
+        file = files + "/" + file
+
+        if file.endswith("png") or file.endswith("jpg") or file.endswith("jpeg") or file.endswith("tif") or file.endswith("tiff"):
+            image = cv2.imread(file, -1)
+        elif file.endswith("fit") or file.endswith("fits"):
+            image = fits.open(file)
+            if image[0].data.shape[0] is 3:
+                R = image[0].data[0]
+                G = image[0].data[1]
+                B = image[0].data[2]
+                image = cv2.merge([B, G, R])
+            else:
+                image = image[0].data
+
+        image = img_as_float(image)
+        print("(" + str(i) + "/" + str(total_files) + ") Stacking " + file + "...")
+        if first is None:
+            first = image
+            stacked = image
+        else:
+            images.append(image)
+    
+    print("Calculating median...")
+    stacked = np.median(images, 0)
+    
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        stacked = img_as_uint(stacked)
+    
+    #How long did the stacking take?
     stop = timer()
     total = str(float("%0.3f"%float(stop - start)))
     print("Stacking took " + total + "s")
@@ -328,7 +384,8 @@ def choose_dir(self, mode, title=None):
                     self.list_bias.addItem(directory + "/" + file)
 
 # this function is for executing image processing sequence
-def process_images(self):
+# stackfunc is the function to call for stacking: stackmode(dir, self)
+def process_images(self, stackmode):
     bias_bool = False
     dark_bool = False
     flat_bool = False
@@ -338,7 +395,7 @@ def process_images(self):
             global master_bias
             try:
                 bias_bool = True
-                master_bias = average(biasdir, self)
+                master_bias = stackmode(biasdir, self)
             except Exception as e:
                 bias_bool = False
                 print(e)
@@ -351,7 +408,7 @@ def process_images(self):
             global master_dark
             try:
                 dark_bool = True
-                master_dark = average(darksdir, self)
+                master_dark = stackmode(darksdir, self)
             except Exception as e:
                 dark_bool = False
                 print(e)
@@ -364,7 +421,7 @@ def process_images(self):
             #flat_bool = True
             #global master_flat
             #try:
-                #master_flat = average(flatsdir, self)
+                #master_flat = stackmode(flatsdir, self)
             #except Exception as e:
                 #print(e)
                 #print("Couldn't stack flat frames")
@@ -428,7 +485,7 @@ def process_images(self):
     if lightdir is not None and lightdir is not "":
         print("Done.\nStacking images...")
         try:
-            avg = average(lightdir + "/aligned", self)
+            avg = stackmode(lightdir + "/aligned", self)
             cv2.imwrite(lightdir + "/stacked.png", avg)
             print("Done!")
         except Exception as e:
@@ -454,7 +511,7 @@ class MainDialog(QMainWindow):
 
         self.choose_lights.clicked.connect(partial(choose_dir, self, 0, "Select Light frames"))
         self.choose_darks.clicked.connect(partial(choose_dir, self, 1, "Select Dark frames"))
-        self.choose_flats.clicked.connect(partial(choose_dir, self, 2, "Select Flats"))
+        self.choose_flats.clicked.connect(partial(choose_dir, self, 2, "Select Flat frames"))
         self.choose_bias.clicked.connect(partial(choose_dir, self, 3, "Select Bias frames"))
 
         self.threshold.valueChanged.connect(self.thresholdchange)
@@ -476,8 +533,21 @@ class MainDialog(QMainWindow):
         threshold = self.threshold.value()
 
     def stack(self):
-        t = threading.Thread(target=process_images, args=(self,))
-        t.start()
+        try:
+            lightdir
+        except NameError:
+            print("Please choose light frames before stacking.")
+        else:
+            if self.stack_average.isChecked():
+                print("Average stacking selected")
+                t = threading.Thread(target=process_images, args=(self, average))
+                t.start()
+            elif self.stack_median.isChecked():
+                print("Median stacking selected")
+                t = threading.Thread(target=process_images, args=(self, median))
+                t.start()
+            else:
+                print("No stacking mode selected - are the radio buttons broken?\nCan't stack this")
 
     def test_threshold(self):
         try:

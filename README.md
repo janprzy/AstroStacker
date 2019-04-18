@@ -12,9 +12,11 @@ here's what's working and what will be added:
   surfaces, second one is good for planetary images)
 - Reading 8/16/32-bit FITS images and RAW DSLR images
 - Writing to various formats, like FITS, TIFF
-- More stacking methods (median, average, maximum, minimum)
+- More stacking methods (median, maximum, minimum, additive)
 - Pixel rejection algorithms for stacking
 - Reduce size of needed libraries
+- Add ability to stop stacking
+- Mosaik stacking
 
 ### Installation
 1. Clone this git repository: `git clone -b master --single-branch https://github.com/hamstersztyk/AstroStacker.git`
