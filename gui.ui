@@ -114,9 +114,9 @@
      </layout>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <widget class="QGroupBox" name="alignMode">
+       <widget class="QGroupBox" name="alignmode_buttons">
         <property name="title">
          <string>Align mode</string>
         </property>
@@ -162,7 +162,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QGroupBox" name="stackMode">
+       <widget class="QGroupBox" name="stackmode_buttons">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -223,36 +223,30 @@
        </spacer>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_6">
-        <item>
-         <widget class="QLabel" name="threshold_label">
-          <property name="text">
-           <string>Star detection threshold</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item>
-           <widget class="QSpinBox" name="threshold">
-            <property name="value">
-             <number>60</number>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="test_button">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="text">
-             <string>Test</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
+       <widget class="QGroupBox" name="threshold_test">
+        <property name="title">
+         <string>Star detection threshold</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_6">
+         <item>
+          <widget class="QSpinBox" name="threshold">
+           <property name="value">
+            <number>60</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="test_button">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string>Test</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </item>
       <item>
        <spacer name="horizontalSpacer">

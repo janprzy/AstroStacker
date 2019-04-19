@@ -19,6 +19,7 @@ here's what's working and what will be added:
 - Mosaik stacking
 - Add setting for weighting when using additive stacking
 - Fix hardcoded paths and functions that do more than they should (e.g. the stacking functions should not be responsible for reading in the images)
+- Disable UI while stacking
 
 ### Installation
 1. Clone this git repository: `git clone -b master --single-branch https://github.com/hamstersztyk/AstroStacker.git`

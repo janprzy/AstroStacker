@@ -437,7 +437,7 @@ def choose_dir(self, dirlist=None, title="Directory"):
 
 # this function is for executing image processing sequence
 # stackfunc is the function to call for stacking: stackmode(dir, self)
-def process_images(self, stackmode, alignmode):
+def process_images(self, stackmode, alignmode=None):    
     bias_bool = False
     dark_bool = False
     flat_bool = False
@@ -572,19 +572,29 @@ class MainDialog(QMainWindow):
         self.choose_flats_button.clicked.connect(self.choose_flats)
         self.choose_bias_button.clicked.connect(self.choose_bias)
         
-        # Radio buttons
-        # Align mode
-        self.mode_triangles
-        self.mode_ecc
-        self.mode_center
-        self.mode_not
-        
-        # Stack mode
-        
         self.threshold.valueChanged.connect(self.thresholdchange)
+        
+        # Align mode selection
+        self.mode_triangles.pressed.connect(self.triangles_align)
+        self.mode_ecc.pressed.connect(self.ecc_align)
+        self.mode_center.pressed.connect(self.center_align)
+        self.mode_not.pressed.connect(self.no_align)
+        
+        # Stacking mode selection
+        self.stack_average.pressed.connect(self.average_stacking)
+        self.stack_median.pressed.connect(self.median_stacking)
+        self.stack_add.pressed.connect(self.add_stacking)
 
         global threshold
         threshold = 60
+        
+        # Set default modes for aligning and stacking
+        self.alignmode = triangleAlign
+        self.stackmode = average
+
+        # UI elements to disable while stacking
+        global disabledUI
+        disabledUI = [self.stackmode_buttons, self.alignmode_buttons, self.threshold_test, self.choose_lights_button, self.choose_darks_button, self.choose_bias_button, self.stack_button]
 
         self.home()
         sys.stdout = Stream(console=self.onUpdateText)
@@ -594,15 +604,12 @@ class MainDialog(QMainWindow):
     def choose_lights(self):
         global lightdir
         lightdir = choose_dir(self, self.list_lights, "Light Frames")
-        
     def choose_darks(self):
         global darksdir
         darksdir = choose_dir(self, self.list_darks, "Dark Frames")
-        
     def choose_flats(self):
         global flatsdir
         flatsdir = choose_dir(self, self.list_flats, "Flat Frames")
-        
     def choose_bias(self):
         global biasdir
         biasdir = choose_dir(self, self.list_bias, "Bias Frames")
@@ -616,44 +623,42 @@ class MainDialog(QMainWindow):
     def thresholdchange(self):
         global threshold
         threshold = self.threshold.value()
+        
+    # Set stacking mode
+    def average_stacking(self):
+        print("Average stacking selected")
+        stackmode = average
+    def median_stacking(self):
+        print("Median stacking selected")
+        stackmode = median
+    def add_stacking(self):
+        print("Add stacking selected")
+        stackmode = add
+        
+    # Set align mode
+    def triangles_align(self):
+        print("Triangle aligning selected")
+        alignmode = triangleAlign
+    def ecc_align(self):
+        print("ECC aligning selected")
+        alignmode = None #This mode is not implemented yet and therefore can't be selected
+    def center_align(self):
+        print("Center of gravity aligning selected")
+        alignmode = None #This mode is not implemented yet and therefore can't be selected
+    def no_align(self):
+        print("Not aligning selected")
+        alignmode = None
 
     
     def stack(self):
-        if self.mode_center.isChecked():
-            print("Using center of gravity aligning")
-            alignmode = None #This mode is not implemented yet and therefore can't be selected
-        elif self.mode_ecc.isChecked():
-            print("Using ECC aligning")
-            alignmode = None #This mode is not implemented yet and therefore can't be selected
-        elif self.mode_triangles.isChecked():
-            print("Using triangle aligning")
-            alignmode = triangleAlign
-        elif self.mode_not.isChecked(): # Don't align the images. This can be used to try out different stacking modes without aligning them all over again every time
-            print("Not aligning")
-            alignmode = None
-        else:
-            print("No align mode selected - are the radio buttons broken?\nI can't work like this")
-        
         try:
             lightdir
         except NameError:
             print("Please choose light frames before stacking.")
         else:
-            if self.stack_average.isChecked():
-                print("Average stacking selected")
-                t = threading.Thread(target=process_images, args=(self, average, alignmode))
-                t.start()
-            elif self.stack_median.isChecked():
-                print("Median stacking selected")
-                t = threading.Thread(target=process_images, args=(self, median, alignmode))
-                t.start()
-            elif self.stack_add.isChecked(): 
-                print("Additive stacking selected")
-                t = threading.Thread(target=process_images, args=(self, add, alignmode))
-                t.start()
-            else:
-                print("No stacking mode selected - are the radio buttons broken?\nI can't work like this")
-
+            t = threading.Thread(target=process_images, args=(self, self.stackmode, self.alignmode))
+            t.start()
+            
     def test_threshold(self):
         try:
             calculateThreshold(lightdir, threshold)
