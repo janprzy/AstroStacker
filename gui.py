@@ -13,8 +13,36 @@ import warnings
 import threading
 from timeit import default_timer as timer
 from time import sleep
-from functools import partial
 from astropy.io import fits
+
+# This function returns a list of the images in a directory
+# Exactly this code was used in multiple other function, it will need to be removed from there.
+def readImages(files):
+    dir = os.listdir(files)
+    
+    images = []
+    i = 0
+    total_files = len(dir)
+
+    for file in dir:
+        i += 1
+        file = files + "/" + file
+
+        if file.endswith("png") or file.endswith("jpg") or file.endswith("jpeg") or file.endswith("tif") or file.endswith("tiff"):
+            image = cv2.imread(file, -1)
+        elif file.endswith("fit") or file.endswith("fits"):
+            image = fits.open(file)
+            if image[0].data.shape[0] is 3:
+                R = image[0].data[0]
+                G = image[0].data[1]
+                B = image[0].data[2]
+                image = cv2.merge([B, G, R])
+            else:
+                image = image[0].data
+
+        images.append(image)
+    
+    return images
 
 # this function returns number of stars in first image of the stack
 # it's useful for determining whether threshold is too high or too low
@@ -235,7 +263,7 @@ def triangleAlign(files, original, threshold_percent):
 
 # this function takes a directory of files and calculates the average from pixel values of images
 def average(files, self):
-    print("Starting median stacking")
+    print("Starting average stacking")
     start = timer()
 
     dir = os.listdir(files)
@@ -383,47 +411,29 @@ def subtract(image, calibration):
 def divide(image, calibration):
     return cv2.divide(image, calibration)
 
-# this function sets global variable of choosen directory
-def choose_dir(self, mode, title=None):
-    if title is None or title is "": title="Select Directory"
-    directory = str(QFileDialog.getExistingDirectory(self, title))
-    if directory is not "":
-        if mode is 0:
-            global lightdir
-            lightdir = directory
-            self.list_lights.clear()
-            print("Selected directory with light frames: " + directory)
-            dir = sorted(os.listdir(directory))
-            for file in dir:
-                if os.path.isfile(directory + "/" + file):
-                    self.list_lights.addItem(directory + "/" + file)
-        elif mode is 1:
-            global darksdir
-            darksdir = directory
-            self.list_darks.clear()
-            print("Selected directory with dark frames: " + directory)
-            dir = sorted(os.listdir(directory))
-            for file in dir:
-                if os.path.isfile(directory + "/" + file):
-                    self.list_darks.addItem(directory + "/" + file)
-        elif mode is 2:
-            global flatsdir
-            flatsdir = directory
-            self.list_flats.clear()
-            print("Selected directory with flat frames: " + directory)
-            dir = sorted(os.listdir(directory))
-            for file in dir:
-                if os.path.isfile(directory + "/" + file):
-                    self.list_flats.addItem(directory + "/" + file)
-        elif mode is 3:
-            global biasdir
-            biasdir = directory
-            self.list_bias.clear()
-            print("Selected directory with bias frames: " + directory)
-            dir = sorted(os.listdir(directory))
-            for file in dir:
-                if os.path.isfile(directory + "/" + file):
-                    self.list_bias.addItem(directory + "/" + file)
+# Choose a directory
+# Returns the path of the selected directory and output a list of all files in it to a QListWidget if on is provided
+def choose_dir(self, dirlist=None, title="Directory"):
+    dir = str(QFileDialog.getExistingDirectory(self, "Select "+title))
+    
+    if dir is not "" and dir is not None:
+        if os.path.exists(dir):
+            if os.path.isdir(dir):
+                print("Selected directory with "+title+": " + dir)
+                
+                # Output directory to QListWidget specified in dirlist
+                if dirlist is not None:
+                    dirlist.clear()
+                    dircontent = sorted(os.listdir(dir))
+                    for file in dircontent:
+                        if os.path.isfile(dir + "/" + file):
+                            dirlist.addItem(dir + "/" + file)
+            else:
+                print("Error: Not a directory")
+        else:
+            print("Error: \""+dir+"\" - No such file or directory")
+    return dir
+
 
 # this function is for executing image processing sequence
 # stackfunc is the function to call for stacking: stackmode(dir, self)
@@ -555,12 +565,22 @@ class MainDialog(QMainWindow):
 
         self.stack_button.clicked.connect(self.stack)
         self.test_button.clicked.connect(self.test_threshold)
-
-        self.choose_lights.clicked.connect(partial(choose_dir, self, 0, "Select Light frames"))
-        self.choose_darks.clicked.connect(partial(choose_dir, self, 1, "Select Dark frames"))
-        self.choose_flats.clicked.connect(partial(choose_dir, self, 2, "Select Flat frames"))
-        self.choose_bias.clicked.connect(partial(choose_dir, self, 3, "Select Bias frames"))
-
+        
+        # Directory selection buttons
+        self.choose_lights_button.clicked.connect(self.choose_lights)
+        self.choose_darks_button.clicked.connect(self.choose_darks)
+        self.choose_flats_button.clicked.connect(self.choose_flats)
+        self.choose_bias_button.clicked.connect(self.choose_bias)
+        
+        # Radio buttons
+        # Align mode
+        self.mode_triangles
+        self.mode_ecc
+        self.mode_center
+        self.mode_not
+        
+        # Stack mode
+        
         self.threshold.valueChanged.connect(self.thresholdchange)
 
         global threshold
@@ -568,7 +588,25 @@ class MainDialog(QMainWindow):
 
         self.home()
         sys.stdout = Stream(console=self.onUpdateText)
-
+    
+    # Buttons
+    # Choose directories
+    def choose_lights(self):
+        global lightdir
+        lightdir = choose_dir(self, self.list_lights, "Light Frames")
+        
+    def choose_darks(self):
+        global darksdir
+        darksdir = choose_dir(self, self.list_darks, "Dark Frames")
+        
+    def choose_flats(self):
+        global flatsdir
+        flatsdir = choose_dir(self, self.list_flats, "Flat Frames")
+        
+    def choose_bias(self):
+        global biasdir
+        biasdir = choose_dir(self, self.list_bias, "Bias Frames")
+    
     def onUpdateText(self, text):
         cursor = self.process.textCursor()
         cursor.insertText(text)
@@ -579,6 +617,7 @@ class MainDialog(QMainWindow):
         global threshold
         threshold = self.threshold.value()
 
+    
     def stack(self):
         if self.mode_center.isChecked():
             print("Using center of gravity aligning")
@@ -593,7 +632,7 @@ class MainDialog(QMainWindow):
             print("Not aligning")
             alignmode = None
         else:
-            print("No align mode selected - are the radio buttons broken?\nI can't work this")
+            print("No align mode selected - are the radio buttons broken?\nI can't work like this")
         
         try:
             lightdir
@@ -613,7 +652,7 @@ class MainDialog(QMainWindow):
                 t = threading.Thread(target=process_images, args=(self, add, alignmode))
                 t.start()
             else:
-                print("No stacking mode selected - are the radio buttons broken?\nI can't work this")
+                print("No stacking mode selected - are the radio buttons broken?\nI can't work like this")
 
     def test_threshold(self):
         try:

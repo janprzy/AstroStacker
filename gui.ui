@@ -30,7 +30,7 @@
          <widget class="QListWidget" name="list_lights"/>
         </item>
         <item>
-         <widget class="QPushButton" name="choose_lights">
+         <widget class="QPushButton" name="choose_lights_button">
           <property name="text">
            <string>Choose folder</string>
           </property>
@@ -51,7 +51,7 @@
          <widget class="QListWidget" name="list_darks"/>
         </item>
         <item>
-         <widget class="QPushButton" name="choose_darks">
+         <widget class="QPushButton" name="choose_darks_button">
           <property name="text">
            <string>Choose folder</string>
           </property>
@@ -79,7 +79,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="choose_flats">
+         <widget class="QPushButton" name="choose_flats_button">
           <property name="enabled">
            <bool>false</bool>
           </property>
@@ -103,7 +103,7 @@
          <widget class="QListWidget" name="list_bias"/>
         </item>
         <item>
-         <widget class="QPushButton" name="choose_bias">
+         <widget class="QPushButton" name="choose_bias_button">
           <property name="text">
            <string>Choose folder</string>
           </property>
